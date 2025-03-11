@@ -43,25 +43,6 @@ class MenuItemDimensions(SimphonyStream):
     ).to_dict()
 
 
-class EmployeeDimensions(SimphonyStream):
-    name = "employee_dimensions"
-    path = "/getEmployeeDimensions"
-    replication_key = None
-
-    records_jsonpath = "$.employees[*]"
-
-    schema = th.PropertiesList(
-        th.Property("num", th.IntegerType),
-        th.Property("employeeId", th.IntegerType),
-        th.Property("fName", th.StringType),
-        th.Property("lName", th.StringType),
-        th.Property("payrollId", th.StringType),
-        th.Property("homeLocRef", th.StringType),
-        th.Property("classNum", th.NumberType),
-        th.Property("className", th.StringType),
-    ).to_dict()
-
-
 class TaxDimensions(SimphonyStream):
     name = "tax_dimensions"
     path = "/getTaxDimensions"

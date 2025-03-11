@@ -47,12 +47,11 @@ class TapSimphony(Tap):
             A list of discovered streams.
         """
         return [
-            # streams.MenuItemPrices(self),
-            # streams.MenuItemDimensions(self),
-            # streams.TaxDimensions(self),
-            # streams.EmployeeDimensions(self),
-            # streams.RevenueCenterDimensions(self),
-            # streams.WorkstationsDimensions(self),
+            streams.MenuItemPrices(self),
+            streams.MenuItemDimensions(self),
+            streams.TaxDimensions(self),
+            streams.RevenueCenterDimensions(self),
+            streams.WorkstationsDimensions(self),
             streams.GuestChecks(self),
         ]
 
