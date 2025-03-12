@@ -15,7 +15,7 @@ class MenuItemPrices(SimphonyStream):
     records_jsonpath = "$.menuItemPrices[*]"
 
     schema = th.PropertiesList(
-        th.Property("num", th.StringType),
+        th.Property("num", th.IntegerType),
         th.Property("rvcNum", th.IntegerType),
         th.Property("prcLvlNum", th.IntegerType),
         th.Property("prcLvlName", th.IntegerType),
@@ -106,6 +106,7 @@ class GuestChecks(SimphonyStream):
         th.Property("lastUpdatedUTC", th.DateTimeType),
         th.Property("lastUpdatedLcl", th.DateTimeType),
         th.Property("clsdFlag", th.BooleanType),
+        th.Property("cancelFlag", th.BooleanType),
         th.Property("subTtl", th.NumberType),
         th.Property("nonTxblSlsTtl", th.StringType),
         th.Property("chkTtl", th.NumberType),
@@ -117,6 +118,7 @@ class GuestChecks(SimphonyStream):
         th.Property("ocNum", th.IntegerType),
         th.Property("empNum", th.IntegerType),
         th.Property("numSrvcRd", th.IntegerType),
+        th.Property("errorCorrectTtl", th.IntegerType),
         th.Property(
             "taxes",
             th.ArrayType(
@@ -139,6 +141,7 @@ class GuestChecks(SimphonyStream):
                     th.Property("dtlOcNum", th.IntegerType),
                     th.Property("lineNum", th.IntegerType),
                     th.Property("dtlId", th.IntegerType),
+                    th.Property("parDtlId", th.IntegerType),
                     th.Property("detailUTC", th.DateTimeType),
                     th.Property("detailLcl", th.DateTimeType),
                     th.Property("lastUpdateUTC", th.DateTimeType),
@@ -153,12 +156,31 @@ class GuestChecks(SimphonyStream):
                     th.Property("chkEmpId", th.IntegerType),
                     th.Property("chkEmpNum", th.IntegerType),
                     th.Property("svcRndNum", th.IntegerType),
+                    th.Property("numerator", th.IntegerType),
+                    th.Property("denominator", th.IntegerType),
                     th.Property(
                         "tenderMedia",
                         th.ObjectType(
-                            th.Property("tmedNum", th.IntegerType)
+                            th.Property("tmedNum", th.IntegerType),
                         )
-                    )
+                    ),
+                    th.Property(
+                        "menuItem",
+                        th.ObjectType(
+                            th.Property("miNum", th.IntegerType),
+                            th.Property("modFlag", th.BooleanType),
+                            th.Property("inclTax", th.NumberType),
+                            th.Property("activeTaxes", th.StringType),
+                            th.Property("prcLvl", th.IntegerType),
+                        )
+                    ),
+                    th.Property(
+                        "other",
+                        th.ObjectType(
+                            th.Property("detailType", th.IntegerType),
+                            th.Property("detailNum", th.IntegerType),
+                        )
+                    ),
                 )
             )
         ),
