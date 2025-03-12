@@ -18,7 +18,7 @@ class MenuItemPrices(SimphonyStream):
         th.Property("num", th.IntegerType),
         th.Property("rvcNum", th.IntegerType),
         th.Property("prcLvlNum", th.IntegerType),
-        th.Property("prcLvlName", th.IntegerType),
+        th.Property("prcLvlName", th.StringType),
         th.Property("price", th.NumberType),
         th.Property("effFrDt", th.DateTimeType),
         th.Property("effToDt", th.DateTimeType),
