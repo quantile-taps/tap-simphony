@@ -72,7 +72,7 @@ class RevenueCenterDimensions(SimphonyStream):
 
 
 class WorkstationsDimensions(SimphonyStream):
-    name = "workstatations_dimensions"
+    name = "workstations_dimensions"
     path = "/getLocationDimensions"
     replication_key = None
 
