@@ -89,6 +89,21 @@ class WorkstationsDimensions(SimphonyStream):
     ).to_dict()
 
 
+class TenderMediaDimensions(SimphonyStream):
+    name = "tender_media_dimensions"
+    path = "/getTenderMediaDimensions"
+    primary_keys = ["num"]
+    replication_key = None
+
+    records_jsonpath = "$.tenderMedias[*]"
+
+    schema = th.PropertiesList(
+        th.Property("num", th.IntegerType),
+        th.Property("name", th.StringType),
+        th.Property("type", th.IntegerType),
+    ).to_dict()
+
+
 class GuestChecks(SimphonyStream):
     name = "guest_checks"
     path = "/getGuestChecks"

@@ -52,6 +52,7 @@ class TapSimphony(Tap):
             streams.TaxDimensions(self),
             streams.RevenueCenterDimensions(self),
             streams.WorkstationsDimensions(self),
+            streams.TenderMediaDimensions(self),
             streams.GuestChecks(self),
         ]
 
