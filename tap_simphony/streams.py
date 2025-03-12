@@ -195,7 +195,5 @@ class GuestChecks(SimphonyStream):
             "locRef": self.config["location_reference"],
 
             # TODO: add state logic to loop over the dates. By e.g. doing a sliding window.
-            "busDt": "2025-03-05",
-            # "opnBusDt": "2025-03-05",
-            # "clsdBusDt": "2025-03-06",
+            "busDt": "2025-03-01",
         }
