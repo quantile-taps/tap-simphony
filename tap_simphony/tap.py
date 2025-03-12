@@ -49,9 +49,9 @@ class TapSimphony(Tap):
         return [
             streams.MenuItemPrices(self),
             streams.MenuItemDimensions(self),
-            # streams.TaxDimensions(self),
-            # streams.RevenueCenterDimensions(self),
-            # streams.WorkstationsDimensions(self),
+            streams.TaxDimensions(self),
+            streams.RevenueCenterDimensions(self),
+            streams.WorkstationsDimensions(self),
             # streams.GuestChecks(self),
         ]
 
