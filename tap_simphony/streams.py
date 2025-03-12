@@ -118,7 +118,7 @@ class GuestChecks(SimphonyStream):
         th.Property("ocNum", th.IntegerType),
         th.Property("empNum", th.IntegerType),
         th.Property("numSrvcRd", th.IntegerType),
-        th.Property("errorCorrectTtl", th.IntegerType),
+        th.Property("errorCorrectTtl", th.NumberType),
         th.Property(
             "taxes",
             th.ArrayType(
