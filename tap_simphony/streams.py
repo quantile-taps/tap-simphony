@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 class MenuItemPrices(SimphonyStream):
     name = "menu_item_prices"
     path = "/getMenuItemPrices"
+    primary_keys = ["num", "rvcNum"]
     replication_key = None
 
     records_jsonpath = "$.menuItemPrices[*]"
@@ -28,6 +29,7 @@ class MenuItemPrices(SimphonyStream):
 class MenuItemDimensions(SimphonyStream):
     name = "menu_item_dimensions"
     path = "/getMenuItemDimensions"
+    primary_keys = ["num"]    
     replication_key = None
 
     records_jsonpath = "$.menuItems[*]"
@@ -46,6 +48,7 @@ class MenuItemDimensions(SimphonyStream):
 class TaxDimensions(SimphonyStream):
     name = "tax_dimensions"
     path = "/getTaxDimensions"
+    primary_keys = ["num"]
     replication_key = None
 
     records_jsonpath = "$.taxes[*]"
@@ -61,6 +64,7 @@ class TaxDimensions(SimphonyStream):
 class RevenueCenterDimensions(SimphonyStream):
     name = "revenue_center_dimensions"
     path = "/getRevenueCenterDimensions"
+    primary_keys = ["num"]
     replication_key = None
 
     records_jsonpath = "$.revenueCenters[*]"
@@ -74,6 +78,7 @@ class RevenueCenterDimensions(SimphonyStream):
 class WorkstationsDimensions(SimphonyStream):
     name = "workstations_dimensions"
     path = "/getLocationDimensions"
+    primary_keys = ["wsNum"]
     replication_key = None
 
     records_jsonpath = "$.locations[0].workstations.[*]"
