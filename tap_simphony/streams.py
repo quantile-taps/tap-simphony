@@ -79,8 +79,8 @@ class WorkstationsDimensions(SimphonyStream):
     records_jsonpath = "$.locations[0].workstations.[*]"
 
     schema = th.PropertiesList(
-        th.Property("num", th.IntegerType),
-        th.Property("name", th.StringType),
+        th.Property("wsNum", th.IntegerType),
+        th.Property("wsName", th.StringType),
     ).to_dict()
 
 
