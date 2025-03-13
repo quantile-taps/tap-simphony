@@ -10,7 +10,6 @@ from singer_sdk.helpers.types import Context
 import secrets
 import base64
 import hashlib
-import requests
 
 
 def generate_code_verifier_and_challenge() -> tuple:
