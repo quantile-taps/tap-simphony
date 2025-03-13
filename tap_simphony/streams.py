@@ -1,11 +1,14 @@
 """Stream type classes for tap-simphony."""
 
 from __future__ import annotations
-import typing as t
 from singer_sdk import typing as th
 from tap_simphony.client import SimphonyStream
 from singer_sdk.helpers.types import Context
-from datetime import datetime, timedelta
+import requests
+import pendulum
+from singer_sdk import metrics
+import typing as t
+
 
 class MenuItemPrices(SimphonyStream):
     name = "menu_item_prices"
@@ -108,7 +111,7 @@ class GuestChecks(SimphonyStream):
     name = "guest_checks"
     path = "/getGuestChecks"
     primary_keys = ["guestCheckId"]
-    replication_key = None
+    replication_key = "opnLcl"
 
     records_jsonpath = "$.guestChecks[*]"
 
@@ -211,9 +214,111 @@ class GuestChecks(SimphonyStream):
         context: Context | None,
         next_page_token: t.Any | None,
     ) -> dict | None:
-        return {
+        payload = {
             "locRef": self.config["location_reference"],
-
-            # TODO: add state logic to loop over the dates. By e.g. doing a sliding window.
-            "busDt": "2025-03-01",
         }
+
+        # If making the first request, there is no `next_page_token` and we need to fetch the start date
+        if not next_page_token:
+            payload["busDt"] = self.starting_date.strftime("%Y-%m-%d")
+
+        else:
+            payload["busDt"] = next_page_token
+
+        return payload
+    
+    @property
+    def starting_date(self) -> pendulum.datetime:
+        """
+        Returns the starting date from when to start fetching time registrations as a pendulum object.
+        """
+        return pendulum.parse(self.get_starting_timestamp({}).strftime("%Y-%m-%d"))
+
+    @property
+    def period_to_retrieve(self) -> list[str]:
+        """
+        Because we have to create individual requests for each day, we need to generate a list of days. This method returns 
+        a list of days between the start date and yesterday.
+        """
+        start_date = self.starting_date
+
+        # We always want to retrieve the time registrations untill the previous day due to there might be a delay in the data
+        end_date = pendulum.today() - pendulum.duration(days=1)
+
+        # Get a list of dates between the start and end date. We use this for pagination.
+        period = pendulum.interval(start_date, end_date)
+        period_days = [day.strftime("%Y-%m-%d") for day in period.range('days')]
+
+        return period_days
+
+    def get_next_page_token(
+        self,
+        response: requests.Response,
+        previous_token: t.Optional[str],
+        ) -> t.Optional[str]:
+        """This method returns the next date string untill we have reached the current day minus one day."""
+        # If there is no `previous_token`, we have only requested the time registration for the starting date.
+        # We set the `previous_token` to the starting date
+        if not previous_token:
+            previous_token = self.starting_date.strftime("%Y-%m-%d")
+
+        # Add a day to the `previous_token` (i.e. last day for which time registrations have been requested)
+        next_day_to_retrieve = pendulum.parse(previous_token).add(days=1)
+        next_day_to_retrieve_formatted = next_day_to_retrieve.strftime("%Y-%m-%d")
+
+        # If we passed the current date, we have requested all time registrations.
+        # We end the request loop by returning None.
+        if next_day_to_retrieve_formatted not in self.period_to_retrieve:
+            return None
+
+        return next_day_to_retrieve_formatted
+    
+    def request_records(self, context: Context | None) -> t.Iterable[dict]:
+        """
+        The original request_records method stops when no records are found in the last response.
+        This is not the desired behavior for the guest_checks stream, because there can be days without guest checks.
+        Therefore, we override the request_records method to keep requesting records until the end of the period_to_retrieve.
+
+        We only commented out the exception handling in the original method.
+
+        Args:
+            context: Stream partition or context dictionary.
+
+        Yields:
+            An item for every record in the response.
+        """
+        paginator = self.get_new_paginator()
+        decorated_request = self.request_decorator(self._request)
+        pages = 0
+
+        with metrics.http_request_counter(self.name, self.path) as request_counter:
+            request_counter.context = context
+
+            while not paginator.finished:
+                prepared_request = self.prepare_request(
+                    context,
+                    next_page_token=paginator.current_value,
+                )
+                resp = decorated_request(prepared_request, context)
+                request_counter.increment()
+                self.update_sync_costs(prepared_request, resp, context)
+                records = iter(self.parse_response(resp))
+                try:
+                    first_record = next(records)
+
+                except:
+                    # If no records are found in the response, we prevent it from stopping
+                    first_record = None
+                    pass
+                # except StopIteration:
+                #     self.logger.info(
+                #         "Pagination stopped after %d pages because no records were "
+                #         "found in the last response",
+                #         pages,
+                #     )
+                #     break
+                yield first_record
+                yield from records
+                pages += 1
+
+                paginator.advance(resp)
