@@ -246,7 +246,7 @@ class GuestChecks(SimphonyStream):
         end_date = pendulum.today() - pendulum.duration(days=1)
 
         # Get a list of dates between the start and end date. We use this for pagination.
-        period = pendulum.interval(start_date, end_date)
+        period = pendulum.interval(start_date, end_date.add(days=1))
         period_days = [day.strftime("%Y-%m-%d") for day in period.range('days')]
 
         return period_days
