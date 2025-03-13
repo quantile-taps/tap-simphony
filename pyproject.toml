@@ -9,6 +9,7 @@ keywords = ["ELT", "simphony"]
 python = ">=3.9"
 requests = "^2.25.1"
 singer-sdk = "^0.44.3"
+pendulum = "^3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.5"
