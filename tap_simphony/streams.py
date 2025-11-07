@@ -135,7 +135,7 @@ class GuestChecks(SimphonyStream):
         th.Property("chkTtl", th.NumberType),
         th.Property("dscTtl", th.NumberType),
         th.Property("payTtl", th.NumberType),
-        th.Property("balDueTtl", th.StringType),
+        th.Property("balDueTtl", th.NumberType),
         th.Property("rvcNum", th.IntegerType),
         th.Property("otNum", th.IntegerType),
         th.Property("ocNum", th.IntegerType),
